@@ -1,17 +1,26 @@
-import express, { Request, Response } from 'express';
+import * as trpc from '@trpc/server';
+import { z } from 'zod';
+import { createHTTPServer } from '@trpc/server/adapters/standalone';
 import cors from 'cors';
 
-const app = express();
 const PORT = 3001;
 
-// Enable CORS middleware
-app.use(cors());
+const t = trpc.initTRPC.create();
 
-app.get('/api/data', (req: Request, res: Response) => {
-  const data = { message: 'Hello from server!' };
-  res.json(data);
+export const router = t.router;
+export const publicProcedure = t.procedure;
+
+export const appRouter = router({
+  getMessage: publicProcedure.input(z.object({ text: z.string().nullish() }).nullish()).query(
+    (opts) => ({ message: opts?.input?.text ?? 'Hello from server!' })
+  )
+})
+
+export type AppRouter = typeof appRouter;
+
+const server = createHTTPServer({
+  middleware: cors(),
+  router: appRouter,
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+server.listen(PORT);
