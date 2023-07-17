@@ -11,18 +11,6 @@ export const App = () => {
       links: [
         httpBatchLink({
           url: 'http://localhost:3001/trpc',
-          fetch(url, options) {
-            return fetch(url, {
-              ...options,
-              credentials: 'include', //required to avoid CORS
-            });
-          },
-          // You can pass any HTTP headers you wish here
-          async headers() {
-            return {
-              authorization: 'mocked-token',
-            };
-          },
         }),
       ],
     }),
