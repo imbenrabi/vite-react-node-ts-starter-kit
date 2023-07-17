@@ -1,7 +1,8 @@
 import React from 'react'
-import { trpc } from './utils'
+import { useTrpcServer } from './hooks';
 
 export const Root = () => {
+  const {trpc} = useTrpcServer();
   const messageQuery = trpc.messages.getMessage.useQuery({text: 'imbenrabi'});
 
   return (
