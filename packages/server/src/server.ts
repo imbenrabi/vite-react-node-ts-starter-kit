@@ -1,17 +1,20 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
+import * as trpcExpress from '@trpc/server/adapters/express';
+import { createContext } from './context';
+import { appRouter } from './router';
 
-const app = express();
 const PORT = 3001;
+const app = express();
 
-// Enable CORS middleware
 app.use(cors());
 
-app.get('/api/data', (req: Request, res: Response) => {
-  const data = { message: 'Hello from server!' };
-  res.json(data);
-});
+app.use(
+  '/trpc',
+  trpcExpress.createExpressMiddleware({
+    router: appRouter,
+    createContext,
+  })
+);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT);
