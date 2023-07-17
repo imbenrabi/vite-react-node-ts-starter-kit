@@ -1,1 +1,1 @@
-export * from './useTrpcServer'
+export * from './useTrpcServer';
